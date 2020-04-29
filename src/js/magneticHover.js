@@ -43,12 +43,13 @@ export default class MagneticHover {
    * @return {number} elementPosition.right
    * @return {number} elementPosition.bottom
    */
-  get _elementPosition() {
+ get _elementPosition() {
+    const elementCoordinate = this.element.getBoundingClientRect()
     return {
-      top: this.element.offsetTop,
-      left: this.element.offsetLeft,
-      right: this.element.offsetWidth + this.element.offsetLeft,
-      bottom: this.element.offsetHeight + this.element.offsetTop,
+      top: elementCoordinate.top + pageYOffset,
+      left: elementCoordinate.left + pageXOffset,
+      right: elementCoordinate.right + pageXOffset,
+      bottom: elementCoordinate.bottom + pageYOffset
     };
   }
 
@@ -61,34 +62,15 @@ export default class MagneticHover {
    * @return {number} rangePosition.bottom
    */
   get _mouseMoveRange() {
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-
-    const topMouseRangePosition = this.element.offsetTop - this.radius;
-
-    const leftMouseRangePosition = this.element.offsetLeft - this.radius;
-
-    const rightMouseRangePosition =
-      this.element.offsetWidth + this.element.offsetLeft + this.radius;
-
-    const bottomMouseRangePosition =
-      this.element.offsetHeight + this.element.offsetTop + this.radius;
-
-    const top = topMouseRangePosition < 0 ? 0 : topMouseRangePosition;
-    const left = leftMouseRangePosition < 0 ? 0 : leftMouseRangePosition;
-    const right =
-      rightMouseRangePosition > screenWidth
-        ? screenWidth
-        : rightMouseRangePosition;
-    const bottom =
-      bottomMouseRangePosition > screenHeight
-        ? screenHeight
-        : bottomMouseRangePosition;
+    const top = this._elementPosition.top - this.radius;
+    const left = this._elementPosition.left - this.radius;
+    const right = this._elementPosition.right + this.radius;
+    const bottom = this._elementPosition.bottom + this.radius;
     return {
       top,
       left,
       right,
-      bottom,
+      bottom
     };
   }
   /**@method _maxHypotenuse this getter return max length from uttermost point of element to uttermost point mouse move range
@@ -284,7 +266,9 @@ export default class MagneticHover {
    * @param  {number} y cursor position on x axis
    * @return {null}
    */
-  _handleMouseMove({ clientX: x, clientY: y }) {
+  _handleMouseMove({ clientX, clientY }) {
+    const x = clientX + pageXOffset;
+    const y = clientY + pageYOffset;
     if (!this._isWithinRange(x, y)) return;
     this._distance = this._getResultingDistance(x, y);
     this.cb(this._distance);
