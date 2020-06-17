@@ -149,9 +149,10 @@ export default class MagneticHover {
     this.mouseY = clientY;
     if (this._isWithinRange()) {
       this._distance = this._getResultingDistance();
-      console.log(this._distance);
-      this.cb(this._distance);
+    } else {
+      this._distance = 100;
     }
+    this.cb(this._distance);
   }
 
   /**
