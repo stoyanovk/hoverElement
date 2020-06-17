@@ -32,6 +32,7 @@ export default class MagneticHover {
    * @return {number} elementPosition.right
    * @return {number} elementPosition.bottom
    */
+
   get _elementPosition() {
     const elementCoordinate = this.element.getBoundingClientRect();
     return {
@@ -46,6 +47,7 @@ export default class MagneticHover {
    * @return {Object} checks intersection with an element along the x axis
    * @return {boolean} intersection X axis
    */
+
   get _intersectX() {
     const { left, right } = this._elementPosition;
     return Math.min(this.mouseX, right) >= Math.max(this.mouseX, left);
